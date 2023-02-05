@@ -31,7 +31,7 @@ namespace Player_database
                 switch (Console.ReadLine())
                 {
                     case CommandCreateAccount:
-                        database.CreatePlayer();
+                        database.AddPlayer();
                         break;
 
                     case CommandDeleteAccount:
@@ -105,14 +105,10 @@ namespace Player_database
             }
         }
 
-        public void CreatePlayer()
+
+        public void AddPlayer() 
         {
-
-            Console.WriteLine("Ведите имя :");
-            string name = Console.ReadLine();
-
-            Player player = new Player(name);
-
+            Player player = CreatePlayer();
             _players.Add(player);
         }
 
@@ -153,7 +149,17 @@ namespace Player_database
             {
                 Console.WriteLine("игрок не найден");
             }
-            
+        }
+
+        private Player CreatePlayer()
+        {
+
+            Console.WriteLine("Ведите имя :");
+            string name = Console.ReadLine();
+
+            Player player = new Player(name);
+
+            return player;
         }
 
         private bool TryGetPlayer(out Player foundPlayer)
