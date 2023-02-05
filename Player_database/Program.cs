@@ -95,7 +95,6 @@ namespace Player_database
     class Database
     {
         private List<Player> _players;
-        private int _lastUniqueNumber = 0;
 
         public Database()
         {
@@ -116,7 +115,7 @@ namespace Player_database
             Console.WriteLine("ведите имя :");
             string name = Console.ReadLine();
 
-            Player player = new Player(name, ++_lastUniqueNumber);
+            Player player = new Player(name);
 
             _players.Add(player);
         }
