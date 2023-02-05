@@ -68,12 +68,6 @@ namespace Player_database
         private bool _isBanned = false;
         private int _level = 1;
 
-        public Player(string name, int uniqueNumber)
-        {
-            _name = name;
-            UniqueNumber = uniqueNumber;
-        }
-
         public Player(string name)
         {
             _name = name;
