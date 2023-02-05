@@ -1,10 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Media;
-using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Player_database
 {
@@ -46,6 +41,7 @@ namespace Player_database
                     case CommandShowInfoAccount:
                         database.ShowPlayers();
                         break;
+
                     case CommandBanned:
                         database.EditStatus();
                         break;
@@ -63,7 +59,7 @@ namespace Player_database
 
     class Player
     {
-        private static int _id = 0;
+        private static int _ids = 0;
         private string _name;
         private bool _isBanned = false;
         private int _level = 1;
@@ -71,17 +67,17 @@ namespace Player_database
         public Player(string name)
         {
             _name = name;
-            UniqueNumber = ++_id;
+            UniqueNumber = ++_ids;
         }
 
         public int UniqueNumber { get; private set; }
 
-        public void UnblockUser()
+        public void Unblock()
         {
             _isBanned = false;
         }
 
-        public void BlockUser()
+        public void Block()
         {
             _isBanned = true;
         }
@@ -112,7 +108,7 @@ namespace Player_database
         public void CreatePlayer()
         {
 
-            Console.WriteLine("ведите имя :");
+            Console.WriteLine("Ведите имя :");
             string name = Console.ReadLine();
 
             Player player = new Player(name);
@@ -122,14 +118,10 @@ namespace Player_database
 
         public void DeleteAccount()
         {
-            Console.WriteLine("ведите индивидуальный номер игрока для его удаления");
-            Player foundPlayer = FindPlayer();
-
-            if (foundPlayer != null)
+            if (TryGetPlayer(out Player foundPlayer))
             {
                 _players.Remove(foundPlayer);
             }
-
         }
 
         public void EditStatus()
@@ -137,53 +129,64 @@ namespace Player_database
             const int CommandUnblockUser = 1;
             const int CommandBlockUser = 2;
 
-
-            Console.Write("Ведите уникальный номер пользователя :");
-            Player foundPlayer = FindPlayer();
-
-            Console.WriteLine($"{CommandUnblockUser} Разблокировать пользователя ");
-            Console.WriteLine($"{CommandBlockUser} Заблокировать пользователя");
-            int userInput = InputUniqueNumber();
-
-            if (CommandUnblockUser == userInput)
+            if (TryGetPlayer(out Player foundPlayer))
             {
-                foundPlayer.UnblockUser();
-            }
-            else if (CommandBlockUser == userInput)
-            {
-                foundPlayer.BlockUser();
+
+                Console.WriteLine($"{CommandUnblockUser} Разблокировать пользователя ");
+                Console.WriteLine($"{CommandBlockUser} Заблокировать пользователя");
+
+                int userInput = GetUniqueNumber();
+                if (CommandUnblockUser == userInput)
+                {
+                    foundPlayer.Unblock();
+                }
+                else if (CommandBlockUser == userInput)
+                {
+                    foundPlayer.Block();
+                }
+                else
+                {
+                    Console.WriteLine("Неверный ввод");
+                }
             }
             else
             {
-                Console.WriteLine("Неверный ввод");
+                Console.WriteLine("игрок не найден");
             }
+            
         }
 
-        private Player FindPlayer()
+        private bool TryGetPlayer(out Player foundPlayer)
         {
-            Player foundPlayer = null;
-            int uniqueNumber = InputUniqueNumber();
+            int uniqueNumber = GetUniqueNumber();
 
             foreach (var player in _players)
             {
                 if (player.UniqueNumber == uniqueNumber)
                 {
                     foundPlayer = player;
+                    return true;
                 }
             }
 
-            return foundPlayer;
+            foundPlayer = null;
+            return false;
         }
 
-        private int InputUniqueNumber()
+        private int GetUniqueNumber()
         {
             int userNumber = 0;
             bool userInputIsCorrect = false;
+
             while (userInputIsCorrect == false)
             {
                 if (int.TryParse(Console.ReadLine(), out userNumber))
                 {
                     userInputIsCorrect = true;
+                }
+                else
+                {
+                    Console.WriteLine("Неверный ввод числа");
                 }
             }
 
